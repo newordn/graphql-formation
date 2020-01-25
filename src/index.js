@@ -9,6 +9,7 @@ type Query {
   posts: [Post]
 }
 type Post{
+  id:ID!
   sujet:String
   contenu:String
   statut:Boolean
@@ -39,6 +40,10 @@ const getUserById = (id)=>{
  const user = utilisateurs.filter(user=>user.id===id)[0]
  return user
 }
+const getpostid = (id)=>{
+ const post = posts.filter(post=>post.id===id)[0]
+ return post 
+}
 const resolvers = {
   Query: {
     info: () => {console.log('on est dans la fonction info'); return `This is the api for graphql-formation`},
@@ -61,6 +66,7 @@ const resolvers = {
       return utilisateurs[utilisateurs.length-1]
     },
     creationPost: (parent,args,context,info)=>{
+      post.id= new Date().getTime()
       const post = {...args, statut:false,createdAt: dateActuelle()}
        
       // verifie si l'utilisateur est connecte
@@ -79,6 +85,13 @@ const resolvers = {
         return post
 
     },
+    validationPost: (parent,args,context,info) => {
+      const id= post.id 
+      const post = {...args, statut:true,createdAt: dateActuelle()}
+      post.statut= true
+      return getpostid(id)
+    }
+    ,
     connexion: (parent,args,context,info)=>{
       // parse les donnees 
       const noms = args.noms
