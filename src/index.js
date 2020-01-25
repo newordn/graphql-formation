@@ -7,6 +7,7 @@ type Query {
   utilisateurs: [User]
   info: String!
   posts: [Post]
+  allPosts: [Post]
 }
 type Post{
   sujet:String
@@ -45,6 +46,9 @@ const resolvers = {
     utilisateurs: ()=>utilisateurs,
     posts: ()=>{
       return posts.filter(post=>posts.statut===true) 
+     },
+     allPosts: ()=>{
+      return posts
      }
   },
   Mutation:{
