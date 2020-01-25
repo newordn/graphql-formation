@@ -2,6 +2,7 @@ const { GraphQLServer } = require('graphql-yoga')
 const utilisateurs = []
 const posts = []
 let estConnecte = false
+let LePost= id
 const typeDefs = `
 type Query {
   utilisateurs: [User]
@@ -117,6 +118,19 @@ const resolvers = {
         }
         }
       }
+    },
+    validationPost: (parent,args,context,info)=>{
+      const post = {...args, statut:false,createdAt: dateActuelle()}
+      if (LePost)
+        {
+          console.log(LePost) 
+          post.id = getUserById(LePost)
+        }
+        else if{
+          throw "le post n'est pas accepté"
+        }
+        return post
+
     }
   }
 
