@@ -5,13 +5,13 @@ const typeDefs = `
 type Query {
   utilisateurs: [User]
   info: String!
-  posts: [Post] // listage des posts
+  posts: [Post]
 }
 type Post{
   sujet:String
   contenu:String
   statut:Boolean
-  createdAt: Strign
+  createdAt: String
 }
 type Mutation{
   validationPost(id:ID!):Post
@@ -68,10 +68,6 @@ const resolvers = {
         }
         }
       }
-        // si non erreur 
-        // si oui verification du mot de passe
-            // si oui c'est 
-            // sinon erreur
     }
   }
 
