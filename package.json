@@ -1,0 +1,17 @@
+{
+  "name": "graphql-formation",
+  "version": "1.0.0",
+  "description": "projet pour la formation graphql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "actualite"
+  ],
+  "author": "neword",
+  "license": "ISC",
+  "dependencies": {
+    "graphql-yoga": "^1.18.3"
+  }
+}
