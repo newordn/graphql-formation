@@ -87,10 +87,10 @@ const resolvers = {
 
     },
     validationPost: (parent,args,context,info) => {
+      const post = getpostid(id)
       const id= post.id 
-      const post = {...args, statut:true,createdAt: dateActuelle()}
-      post.statut= true
-      return getpostid(id)
+      post.statut= true 
+      return post;
     }
     ,
     connexion: (parent,args,context,info)=>{
