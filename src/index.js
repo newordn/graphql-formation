@@ -1,4 +1,5 @@
 const { GraphQLServer } = require('graphql-yoga')
+const {prisma} = require('./generated/prisma-client')
 const utilisateurs = []
 const posts = []
 let estConnecte = false
@@ -20,6 +21,7 @@ type Post{
 type Mutation{
   validationPost(id:ID!):Post
   creationPost(sujet:String,contenu:String): Post
+  inscriptionPrisma(noms:String,mot_de_passe:String,date_naissance:String): User
   inscription(noms:String,mot_de_passe:String,date_naissance:String): User
   connexion(noms:String,mot_de_passe:String): User
 }
@@ -60,6 +62,10 @@ const resolvers = {
      }
   },
   Mutation:{
+    inscriptionPrisma: async  (parent,args,context,info)=>{
+     const user = await  prisma.createUser({...args})
+     return user
+    },
     inscription: (parent,args,context,info)=>{
       console.log("dans inscription")
       const user = args// recupere les informations de l'utilisateur
@@ -80,7 +86,10 @@ const resolvers = {
         if(estConnecte)
         {
           console.log(estConnecte) // affichage de l'id de l'utilisateur connecte
-          post.postedBy = getUserById(estConnecte)
+          const user = getUserById(estConnecte)
+          post.postedBy = user
+          user.posts.push(post)
+          
         // si oui on recupere l'id de l'utilisateur connecte
         }
         // si non il se doit se connecter d'abord

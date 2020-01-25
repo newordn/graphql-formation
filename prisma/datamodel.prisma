@@ -1,0 +1,17 @@
+type Post{
+  id:ID! @id
+  sujet:String
+  contenu:String
+  statut:Boolean
+  createdAt: DateTime @createdAt
+  postedBy: User @relation(name:"PostUser")
+}
+
+type User{
+  id: ID! @id
+  noms:String 
+  mot_de_passe:String
+  date_naissance:String
+  posts: [Post] @relation(name:"PostUser")
+  createdAt: DateTime @createdAt
+}
