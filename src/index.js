@@ -2,7 +2,6 @@ const { GraphQLServer } = require('graphql-yoga')
 const utilisateurs = []
 const posts = []
 let estConnecte = false
-let LePost= id
 const typeDefs = `
 type Query {
   utilisateurs: [User]
@@ -42,8 +41,11 @@ const getUserById = (id)=>{
  const user = utilisateurs.filter(user=>user.id===id)[0]
  return user
 }
-const getpostid = (id)=>{
- const post = posts.filter(post=>post.id===id)[0]
+const getPostId = (id)=>{
+  console.log(id)
+ const post = posts.filter(post=>{
+   console.log(post.id==id)
+  return  post.id==id})[0]
  return post 
 }
 const resolvers = {
@@ -51,7 +53,7 @@ const resolvers = {
     info: () => {console.log('on est dans la fonction info'); return `This is the api for graphql-formation`},
     utilisateurs: ()=>utilisateurs,
     posts: ()=>{
-      return posts.filter(post=>posts.statut===true) 
+      return posts.filter(post=>post.statut===true) 
      },
      allPosts: ()=>{
       return posts
@@ -71,9 +73,9 @@ const resolvers = {
       return utilisateurs[utilisateurs.length-1]
     },
     creationPost: (parent,args,context,info)=>{
-      post.id= new Date().getTime()
+      
       const post = {...args, statut:false,createdAt: dateActuelle()}
-       
+      post.id= new Date().getTime()
       // verifie si l'utilisateur est connecte
         if(estConnecte)
         {
@@ -91,8 +93,7 @@ const resolvers = {
 
     },
     validationPost: (parent,args,context,info) => {
-      const post = getpostid(id)
-      const id= post.id 
+      const post = getPostId(args.id)
       post.statut= true 
       return post;
     }
@@ -122,19 +123,6 @@ const resolvers = {
         }
         }
       }
-    },
-    validationPost: (parent,args,context,info)=>{
-      const post = {...args, statut:false,createdAt: dateActuelle()}
-      if (LePost)
-        {
-          console.log(LePost) 
-          post.id = getUserById(LePost)
-        }
-        else if{
-          throw "le post n'est pas accepté"
-        }
-        return post
-
     }
   }
 
