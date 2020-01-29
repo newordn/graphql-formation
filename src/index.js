@@ -71,10 +71,15 @@ const resolvers = {
       console.log("dans inscription")
       const user = args// recupere les informations de l'utilisateur
       // recuperer le telephone
+      const phone =args.phone 
       // recuperer la liste des numeros des utilisateurs qu'on a (map)
+      const phones= utilisateurs.map(phone=> phone.phone)
       // verifier si le telephone est dans cette liste ou pas
-      // sinon on throw ....
-      // si oui ...
+      if(phones.includes(phone)){
+        // si oui
+        throw "utilisateur est déjà connecté"
+      } else { 
+      // si non...
       // construit la date a afficher a l'utilisateur
      user.id= new Date().getTime() 
      user.posts = []
@@ -83,7 +88,8 @@ const resolvers = {
       utilisateurs.push(user)
       // retourne le premier utilisateur
       return utilisateurs[utilisateurs.length-1]
-    },
+    }
+  },
     creationPost: (parent,args,context,info)=>{
       
       const post = {...args, statut:false,createdAt: dateActuelle()}
