@@ -26,9 +26,10 @@ type Subscription{
 }
 type Mutation{
   validationPost(id:ID!):Post
-  creationPost(sujet:String,contenu:String,token:String): Post
+  creationPost(sujet:String,contenu:String): Post
   inscriptionPrisma(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
   connexionPrisma(phone:String,mot_de_passe:String): AuthPayload
+  creationPostPrisma(sujet:String,contenu:String,token:String): Post
   inscription(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
   connexion(phone:String,mot_de_passe:String): AuthPayload
 }
@@ -91,6 +92,7 @@ const resolvers = {
      const user = await  prisma.createUser({...args,mot_de_passe})
      return user
     },
+
     connexionPrisma:async (parent,args,context,info)=>{
       const user =  await prisma.user({phone:args.phone})
 
@@ -108,6 +110,11 @@ const resolvers = {
         user
     }
     },
+    creationPostPrisma:async (parent,args,context,info)=> {
+    const post = await prisma.createPost({...args})  
+    return post  
+    
+     },
     inscription: (parent,args,context,info)=>{
       console.log("dans inscription")
       const user = args// recupere les informations de l'utilisateur
@@ -133,8 +140,9 @@ const resolvers = {
       return utilisateurs[utilisateurs.length-1]
     }
   },
-    creationPost: (parent,args,context,info)=>{
-      
+
+ 
+    creationPost: (parent,args,context,info)=>{   
       const post = {...args, statut:false,createdAt: dateActuelle()}
       post.id= new Date().getTime()
       const token = args.token
