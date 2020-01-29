@@ -2,7 +2,7 @@ const { GraphQLServer } = require('graphql-yoga')
 const {prisma} = require('./generated/prisma-client')
 const utilisateurs = []
 const posts = []
-let estConnecte = false
+let tokens = []
 const typeDefs = `
 type Query {
   utilisateurs: [User]
@@ -20,13 +20,18 @@ type Post{
 }
 type Mutation{
   validationPost(id:ID!):Post
-  creationPost(sujet:String,contenu:String): Post
+  creationPost(sujet:String,contenu:String,token:String): Post
   inscriptionPrisma(noms:String,mot_de_passe:String,date_naissance:String): User
   inscription(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
-  connexion(phone:String,mot_de_passe:String): User
+  connexion(phone:String,mot_de_passe:String): AuthPayload
+}
+type AuthPayload{
+  user:User
+  token:String
 }
 type User{
   id: ID!
+  admin:Boolean
   noms:String
   phone:String
   mot_de_passe:String
@@ -43,6 +48,9 @@ const getUserById = (id)=>{
   //utilisateurs.map(user=>user.id===id)
  const user = utilisateurs.filter(user=>user.id===id)[0]
  return user
+}
+const getIdByToken = (token)=>{
+ return  utilisateurs[tokens.indexOf(token)].id
 }
 const getPostId = (id)=>{
   console.log(id)
@@ -70,6 +78,7 @@ const resolvers = {
     inscription: (parent,args,context,info)=>{
       console.log("dans inscription")
       const user = args// recupere les informations de l'utilisateur
+      user.admin = false
       // recuperer le telephone
       const phone =args.phone 
       // recuperer la liste des numeros des utilisateurs qu'on a (map)
@@ -77,7 +86,7 @@ const resolvers = {
       // verifier si le telephone est dans cette liste ou pas
       if(phones.includes(phone)){
         // si oui
-        throw "utilisateur est déjà connecté"
+        throw "utilisateur est déjà inscrit"
       } else { 
       // si non...
       // construit la date a afficher a l'utilisateur
@@ -86,6 +95,7 @@ const resolvers = {
      user.createdAt = dateActuelle()
      // ajoute le nouvel utilisateur a la liste des utilisateurs
       utilisateurs.push(user)
+      tokens.push(false)
       // retourne le premier utilisateur
       return utilisateurs[utilisateurs.length-1]
     }
@@ -94,11 +104,12 @@ const resolvers = {
       
       const post = {...args, statut:false,createdAt: dateActuelle()}
       post.id= new Date().getTime()
+      const token = args.token
       // verifie si l'utilisateur est connecte
-        if(estConnecte)
+        if(tokens.includes(token))
         {
-          console.log(estConnecte) // affichage de l'id de l'utilisateur connecte
-          const user = getUserById(estConnecte)
+          const id = getIdByToken(token)
+          const user = getUserById(id)
           post.postedBy = user
           user.posts.push(post)
           
@@ -114,6 +125,9 @@ const resolvers = {
 
     },
     validationPost: (parent,args,context,info) => {
+      const user = getUserById(estConnecte)
+      if(!user.admin) throw 'Vous devez etre administrateur pour valider un post'
+      
       const post = getPostId(args.id)
       post.statut= true 
       return post;
@@ -130,7 +144,8 @@ const resolvers = {
             if(utilisateurs[i].mot_de_passe===password){
                 console.log('il est connecte')
                 estConnecte =  utilisateurs[i].id
-                return utilisateurs[i]
+                tokens[i] = (Math.random()*1000).toString()
+                return {user: utilisateurs[i],token:tokens[i]}
             }
             else{
                 console.log('le mot de passe ne correspond pas')
