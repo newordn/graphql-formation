@@ -26,6 +26,7 @@ type Mutation{
   connexion(noms:String,mot_de_passe:String): User
 }
 type User{
+  status: Boolean
   id: ID!
   noms:String
   mot_de_passe:String
@@ -73,6 +74,7 @@ const resolvers = {
      user.id= new Date().getTime() 
      user.posts = []
      user.createdAt = dateActuelle()
+     user.status= false
      // ajoute le nouvel utilisateur a la liste des utilisateurs
       utilisateurs.push(user)
       // retourne le premier utilisateur
@@ -114,23 +116,28 @@ const resolvers = {
       // verification de l'existence de l'utilisateur
       for(i=0;i<=utilisateurs.length-1;i++){
         if(utilisateurs[i].noms===noms){
-            console.log("l'user est chez nouss")
+          console.log("l'user est chez nous")
+          if(utilisateurs[i].status) { 
+            console.log("l'user est déja connecté ")
+          } else {
             if(utilisateurs[i].mot_de_passe===password){
+              args.status = true
                 console.log('il est connecte')
                 estConnecte =  utilisateurs[i].id
                 return utilisateurs[i]
-            }
+              
+              }
             else{
                 console.log('le mot de passe ne correspond pas')
                 throw "Mot de passe incorrect"
             }
-        }  
-        else if(i===utilisateurs.length-1)
-        {
+           } 
+          } else if(i===utilisateurs.length-1) {
             console.log("l'utilisateur n'est pas chez nous")
             throw "Utilisateur n'existe pas"
         }
         }
+        return utilisateurs 
       }
     }
   }

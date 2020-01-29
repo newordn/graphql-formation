@@ -1,6 +1,7 @@
-#endpoint: ''endpoint: https://eu1.prisma.sh/emmanuel-foka-ziegoube/graphql-formation/dev
+#endpoint: ''
+endpoint: https://eu1.prisma.sh/emmanuel-foka-ziegoube/graphql-formation/dev
 
 datamodel: datamodel.prisma
-generate:
-  - generator: javascript-client
-    output: ../src/generated/prisma-client
+generate: 
+  - generator: javascript-client 
+    output: ../src/generated/prisma-client 
