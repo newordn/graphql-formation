@@ -26,6 +26,7 @@ type Subscription{
 }
 type Mutation{
   validationPost(id:ID!):Post
+  creationPostPrisma(sujet:String,contenu:String): Post
   creationPost(sujet:String,contenu:String,token:String): Post
   inscriptionPrisma(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
   connexionPrisma(phone:String,mot_de_passe:String): AuthPayload
@@ -86,6 +87,10 @@ const resolvers = {
      }
   },
   Mutation:{
+    creationPostPrisma: async (parent,args,context,info)=>{
+      const post = await prisma.createPost({...args,statut:false})  
+      return post  
+    },
     inscriptionPrisma: async  (parent,args,context,info)=>{
       const mot_de_passe = await bcrypt.hash(args.mot_de_passe,10)
      const user = await  prisma.createUser({...args,mot_de_passe})
