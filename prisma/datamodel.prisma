@@ -10,6 +10,7 @@ type Post{
 type User{
   id: ID! @id
   noms:String 
+  phone:String @unique
   mot_de_passe:String
   date_naissance:String
   posts: [Post] @relation(name:"PostUser")

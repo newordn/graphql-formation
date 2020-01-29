@@ -1,8 +1,11 @@
 const { GraphQLServer } = require('graphql-yoga')
 const {prisma} = require('./generated/prisma-client')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const utilisateurs = []
 const posts = []
 let tokens = []
+const APP_SECRET="GRAPHQL-API"
 const typeDefs = `
 type Query {
   utilisateurs: [User]
@@ -18,10 +21,14 @@ type Post{
   createdAt: String
   postedBy: User
 }
+type Subscription{
+  newUser : User
+}
 type Mutation{
   validationPost(id:ID!):Post
   creationPost(sujet:String,contenu:String,token:String): Post
-  inscriptionPrisma(noms:String,mot_de_passe:String,date_naissance:String): User
+  inscriptionPrisma(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
+  connexionPrisma(phone:String,mot_de_passe:String): AuthPayload
   inscription(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
   connexion(phone:String,mot_de_passe:String): AuthPayload
 }
@@ -60,6 +67,14 @@ const getPostId = (id)=>{
  return post 
 }
 const resolvers = {
+  Subscription:{
+    newUser:{
+    subscribe: (parent,args,context,info)=>{
+      return prisma.$subscribe.user({mutation_in:['CREATED']}).node()
+    },
+    resolve: payload =>payload
+  }
+  },
   Query: {
     info: () => {console.log('on est dans la fonction info'); return `This is the api for graphql-formation`},
     utilisateurs: ()=>utilisateurs,
@@ -72,8 +87,26 @@ const resolvers = {
   },
   Mutation:{
     inscriptionPrisma: async  (parent,args,context,info)=>{
-     const user = await  prisma.createUser({...args})
+      const mot_de_passe = await bcrypt.hash(args.mot_de_passe,10)
+     const user = await  prisma.createUser({...args,mot_de_passe})
      return user
+    },
+    connexionPrisma:async (parent,args,context,info)=>{
+      const user =  await prisma.user({phone:args.phone})
+
+    if(!user){
+        throw new Error("L'utilisateur n'existe pas. Inscrivez-vous")
+    }
+    const valid = await bcrypt.compare(args.mot_de_passe,user.mot_de_passe)
+    if(!valid){
+        throw new Error('Mot de passe incorrect')
+    }
+    
+    const token = jwt.sign({userId: user.id},APP_SECRET)
+    return {
+        token,
+        user
+    }
     },
     inscription: (parent,args,context,info)=>{
       console.log("dans inscription")

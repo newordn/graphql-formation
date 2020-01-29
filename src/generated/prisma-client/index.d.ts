@@ -157,6 +157,8 @@ export type UserOrderByInput =
   | "id_DESC"
   | "noms_ASC"
   | "noms_DESC"
+  | "phone_ASC"
+  | "phone_DESC"
   | "mot_de_passe_ASC"
   | "mot_de_passe_DESC"
   | "date_naissance_ASC"
@@ -187,6 +189,7 @@ export interface PostUpdateWithWhereUniqueWithoutPostedByInput {
 export interface UserCreateInput {
   id?: Maybe<ID_Input>;
   noms?: Maybe<String>;
+  phone?: Maybe<String>;
   mot_de_passe?: Maybe<String>;
   date_naissance?: Maybe<String>;
   posts?: Maybe<PostCreateManyWithoutPostedByInput>;
@@ -248,6 +251,20 @@ export interface UserWhereInput {
   noms_not_starts_with?: Maybe<String>;
   noms_ends_with?: Maybe<String>;
   noms_not_ends_with?: Maybe<String>;
+  phone?: Maybe<String>;
+  phone_not?: Maybe<String>;
+  phone_in?: Maybe<String[] | String>;
+  phone_not_in?: Maybe<String[] | String>;
+  phone_lt?: Maybe<String>;
+  phone_lte?: Maybe<String>;
+  phone_gt?: Maybe<String>;
+  phone_gte?: Maybe<String>;
+  phone_contains?: Maybe<String>;
+  phone_not_contains?: Maybe<String>;
+  phone_starts_with?: Maybe<String>;
+  phone_not_starts_with?: Maybe<String>;
+  phone_ends_with?: Maybe<String>;
+  phone_not_ends_with?: Maybe<String>;
   mot_de_passe?: Maybe<String>;
   mot_de_passe_not?: Maybe<String>;
   mot_de_passe_in?: Maybe<String[] | String>;
@@ -383,6 +400,7 @@ export interface PostScalarWhereInput {
 export interface UserCreateWithoutPostsInput {
   id?: Maybe<ID_Input>;
   noms?: Maybe<String>;
+  phone?: Maybe<String>;
   mot_de_passe?: Maybe<String>;
   date_naissance?: Maybe<String>;
 }
@@ -461,6 +479,7 @@ export interface PostWhereInput {
 
 export interface UserUpdateInput {
   noms?: Maybe<String>;
+  phone?: Maybe<String>;
   mot_de_passe?: Maybe<String>;
   date_naissance?: Maybe<String>;
   posts?: Maybe<PostUpdateManyWithoutPostedByInput>;
@@ -468,6 +487,7 @@ export interface UserUpdateInput {
 
 export interface UserUpdateManyMutationInput {
   noms?: Maybe<String>;
+  phone?: Maybe<String>;
   mot_de_passe?: Maybe<String>;
   date_naissance?: Maybe<String>;
 }
@@ -494,6 +514,7 @@ export interface PostCreateWithoutPostedByInput {
 
 export interface UserUpdateWithoutPostsDataInput {
   noms?: Maybe<String>;
+  phone?: Maybe<String>;
   mot_de_passe?: Maybe<String>;
   date_naissance?: Maybe<String>;
 }
@@ -522,6 +543,7 @@ export interface PostUpdateWithoutPostedByDataInput {
 
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
+  phone?: Maybe<String>;
 }>;
 
 export interface NodeNode {
@@ -531,6 +553,7 @@ export interface NodeNode {
 export interface UserPreviousValues {
   id: ID_Output;
   noms?: String;
+  phone?: String;
   mot_de_passe?: String;
   date_naissance?: String;
   createdAt?: DateTimeOutput;
@@ -541,6 +564,7 @@ export interface UserPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   noms: () => Promise<String>;
+  phone: () => Promise<String>;
   mot_de_passe: () => Promise<String>;
   date_naissance: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
@@ -551,6 +575,7 @@ export interface UserPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   noms: () => Promise<AsyncIterator<String>>;
+  phone: () => Promise<AsyncIterator<String>>;
   mot_de_passe: () => Promise<AsyncIterator<String>>;
   date_naissance: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
@@ -785,6 +810,7 @@ export interface AggregateUserSubscription
 export interface User {
   id: ID_Output;
   noms?: String;
+  phone?: String;
   mot_de_passe?: String;
   date_naissance?: String;
   createdAt?: DateTimeOutput;
@@ -793,6 +819,7 @@ export interface User {
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
   noms: () => Promise<String>;
+  phone: () => Promise<String>;
   mot_de_passe: () => Promise<String>;
   date_naissance: () => Promise<String>;
   posts: <T = FragmentableArray<Post>>(args?: {
@@ -812,6 +839,7 @@ export interface UserSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   noms: () => Promise<AsyncIterator<String>>;
+  phone: () => Promise<AsyncIterator<String>>;
   mot_de_passe: () => Promise<AsyncIterator<String>>;
   date_naissance: () => Promise<AsyncIterator<String>>;
   posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
@@ -831,6 +859,7 @@ export interface UserNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   noms: () => Promise<String>;
+  phone: () => Promise<String>;
   mot_de_passe: () => Promise<String>;
   date_naissance: () => Promise<String>;
   posts: <T = FragmentableArray<Post>>(args?: {

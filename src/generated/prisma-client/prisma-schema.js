@@ -322,6 +322,7 @@ type Subscription {
 type User {
   id: ID!
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
@@ -337,6 +338,7 @@ type UserConnection {
 input UserCreateInput {
   id: ID
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
   posts: PostCreateManyWithoutPostedByInput
@@ -350,6 +352,7 @@ input UserCreateOneWithoutPostsInput {
 input UserCreateWithoutPostsInput {
   id: ID
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
 }
@@ -364,6 +367,8 @@ enum UserOrderByInput {
   id_DESC
   noms_ASC
   noms_DESC
+  phone_ASC
+  phone_DESC
   mot_de_passe_ASC
   mot_de_passe_DESC
   date_naissance_ASC
@@ -375,6 +380,7 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
   createdAt: DateTime
@@ -400,6 +406,7 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
   posts: PostUpdateManyWithoutPostedByInput
@@ -407,6 +414,7 @@ input UserUpdateInput {
 
 input UserUpdateManyMutationInput {
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
 }
@@ -422,6 +430,7 @@ input UserUpdateOneWithoutPostsInput {
 
 input UserUpdateWithoutPostsDataInput {
   noms: String
+  phone: String
   mot_de_passe: String
   date_naissance: String
 }
@@ -460,6 +469,20 @@ input UserWhereInput {
   noms_not_starts_with: String
   noms_ends_with: String
   noms_not_ends_with: String
+  phone: String
+  phone_not: String
+  phone_in: [String!]
+  phone_not_in: [String!]
+  phone_lt: String
+  phone_lte: String
+  phone_gt: String
+  phone_gte: String
+  phone_contains: String
+  phone_not_contains: String
+  phone_starts_with: String
+  phone_not_starts_with: String
+  phone_ends_with: String
+  phone_not_ends_with: String
   mot_de_passe: String
   mot_de_passe_not: String
   mot_de_passe_in: [String!]
@@ -506,6 +529,7 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  phone: String
 }
 `
       }
