@@ -22,13 +22,13 @@ type Mutation{
   validationPost(id:ID!):Post
   creationPost(sujet:String,contenu:String): Post
   inscriptionPrisma(noms:String,mot_de_passe:String,date_naissance:String): User
-  inscription(noms:String,mot_de_passe:String,date_naissance:String): User
-  connexion(noms:String,mot_de_passe:String): User
+  inscription(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
+  connexion(phone:String,mot_de_passe:String): User
 }
 type User{
-  status: Boolean
   id: ID!
   noms:String
+  phone:String
   mot_de_passe:String
   date_naissance:String
   posts: [Post]
@@ -70,11 +70,15 @@ const resolvers = {
     inscription: (parent,args,context,info)=>{
       console.log("dans inscription")
       const user = args// recupere les informations de l'utilisateur
-       // construit la date a afficher a l'utilisateur
+      // recuperer le telephone
+      // recuperer la liste des numeros des utilisateurs qu'on a (map)
+      // verifier si le telephone est dans cette liste ou pas
+      // sinon on throw ....
+      // si oui ...
+      // construit la date a afficher a l'utilisateur
      user.id= new Date().getTime() 
      user.posts = []
      user.createdAt = dateActuelle()
-     user.status= false
      // ajoute le nouvel utilisateur a la liste des utilisateurs
       utilisateurs.push(user)
       // retourne le premier utilisateur
@@ -111,33 +115,28 @@ const resolvers = {
     ,
     connexion: (parent,args,context,info)=>{
       // parse les donnees 
-      const noms = args.noms
+      const phone = args.phone
       const password = args.mot_de_passe
       // verification de l'existence de l'utilisateur
       for(i=0;i<=utilisateurs.length-1;i++){
-        if(utilisateurs[i].noms===noms){
-          console.log("l'user est chez nous")
-          if(utilisateurs[i].status) { 
-            console.log("l'user est déja connecté ")
-          } else {
+        if(utilisateurs[i].phone===phone){
+            console.log("l'user est chez nouss")
             if(utilisateurs[i].mot_de_passe===password){
-              args.status = true
                 console.log('il est connecte')
                 estConnecte =  utilisateurs[i].id
                 return utilisateurs[i]
-              
-              }
+            }
             else{
                 console.log('le mot de passe ne correspond pas')
                 throw "Mot de passe incorrect"
             }
-           } 
-          } else if(i===utilisateurs.length-1) {
+        }  
+        else if(i===utilisateurs.length-1)
+        {
             console.log("l'utilisateur n'est pas chez nous")
             throw "Utilisateur n'existe pas"
         }
         }
-        return utilisateurs 
       }
     }
   }
