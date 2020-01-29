@@ -1,11 +1,8 @@
 const { GraphQLServer } = require('graphql-yoga')
 const {prisma} = require('./generated/prisma-client')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
 const utilisateurs = []
 const posts = []
 let tokens = []
-const APP_SECRET="GRAPHQL-API"
 const typeDefs = `
 type Query {
   utilisateurs: [User]
@@ -21,15 +18,18 @@ type Post{
   createdAt: String
   postedBy: User
 }
-type Subscription{
-  newUser : User
-}
 type Mutation{
   validationPost(id:ID!):Post
+<<<<<<< HEAD
   creationPost(sujet:String,contenu:String): Post
   inscriptionPrisma(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
   connexionPrisma(phone:String,mot_de_passe:String): AuthPayload
   creationPostPrisma(sujet:String,contenu:String,token:String): Post
+=======
+  creationPost(sujet:String,contenu:String,token:String): Post
+  CreationPostPrisma(sujet:String, token:String): Post
+  inscriptionPrisma(noms:String,mot_de_passe:String,date_naissance:String): User
+>>>>>>> be15d3992dcfb94747032130c1ead63f9b95789a
   inscription(noms:String,phone:String,mot_de_passe:String,date_naissance:String): User
   connexion(phone:String,mot_de_passe:String): AuthPayload
 }
@@ -68,14 +68,6 @@ const getPostId = (id)=>{
  return post 
 }
 const resolvers = {
-  Subscription:{
-    newUser:{
-    subscribe: (parent,args,context,info)=>{
-      return prisma.$subscribe.user({mutation_in:['CREATED']}).node()
-    },
-    resolve: payload =>payload
-  }
-  },
   Query: {
     info: () => {console.log('on est dans la fonction info'); return `This is the api for graphql-formation`},
     utilisateurs: ()=>utilisateurs,
@@ -88,10 +80,10 @@ const resolvers = {
   },
   Mutation:{
     inscriptionPrisma: async  (parent,args,context,info)=>{
-      const mot_de_passe = await bcrypt.hash(args.mot_de_passe,10)
-     const user = await  prisma.createUser({...args,mot_de_passe})
+     const user = await  prisma.createUser({...args})
      return user
     },
+<<<<<<< HEAD
 
     connexionPrisma:async (parent,args,context,info)=>{
       const user =  await prisma.user({phone:args.phone})
@@ -115,6 +107,8 @@ const resolvers = {
     return post  
     
      },
+=======
+>>>>>>> be15d3992dcfb94747032130c1ead63f9b95789a
     inscription: (parent,args,context,info)=>{
       console.log("dans inscription")
       const user = args// recupere les informations de l'utilisateur
@@ -140,9 +134,18 @@ const resolvers = {
       return utilisateurs[utilisateurs.length-1]
     }
   },
+<<<<<<< HEAD
 
  
     creationPost: (parent,args,context,info)=>{   
+=======
+  CreationPostPrisma: async (parent, args, context, info)=>{
+const post = await prisma.CreatePost{...args, statut:false}
+return post
+  }
+    creationPost: (parent,args,context,info)=>{
+      
+>>>>>>> be15d3992dcfb94747032130c1ead63f9b95789a
       const post = {...args, statut:false,createdAt: dateActuelle()}
       post.id= new Date().getTime()
       const token = args.token
